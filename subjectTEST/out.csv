@@ -1,0 +1,17 @@
+,event_number,category,sub_category,accuracy,text
+0,1,I,3,T,"I remember being in the train station,"
+1,1,I,3,T,with big circular old-style archways on the ceiling
+2,1,I,1,T,I walked through the ticket barrier 
+3,1,I,1,F,"and a women said hello to me, or welcomed me."
+4,1,I,1,F,Oh and there was an announcement about a train being late or something
+5,1,E,1,T,This was right after you said the experiment started
+6,1,NaN,NaN,NaN,This shouldn’t work
+0,2,I,1,T,Yes I remember meeting Dave. 
+1,2,I,1,T,"He was the tour guide, "
+2,2,I,5,T,And he was very enthusiastic.
+3,2,I,4,T,"It was right outside the train station, where we met him."
+4,2,I,1,T,"He explained Filbury was a great place, "
+5,2,I,1,T,And there was so much to see and do.
+6,2,I,1,T,"I think there might have been cars going past too, "
+7,2,I,1,F,And one honked it’s horn
+8,2,1,2,T,
