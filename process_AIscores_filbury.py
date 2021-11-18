@@ -5,7 +5,7 @@ from docx import Document
 from lxml import etree
 import zipfile
 import re
-import glob
+import os
 import sys
 import pandas as pd
 import warnings
@@ -42,7 +42,6 @@ def paragraph_comments(paragraph,comments_dict):
     return comments
 
 
-
 def extract_AI_scores(docxFileName):
 
     document = Document(docxFileName)
@@ -52,12 +51,16 @@ def extract_AI_scores(docxFileName):
     category = []
     sub_category = []
     accuracy = []
-    filename = []
+    event_number = []
     
-    print("Processing File {}".format(docxFileName))
-
+    event_number_within_loop = []
     
     for para in document.paragraphs:
+        # Check if this paragraph contains Event X, if so update event_number_within_loop
+        find_event_number = (re.findall(r'\bEvent \d+',para.text))
+        if find_event_number:
+            event_number_within_loop = [int(s) for s in find_event_number[0].split() if s.isdigit()][0]
+            print("Processing Event {}".format(event_number_within_loop))
         
         # Check if paragraph contains a comment
         comm = []
@@ -73,7 +76,7 @@ def extract_AI_scores(docxFileName):
 
     #       Warn the user if there is an unusually short string
             if len(para.text) < 1:
-                warnings.warn("TEXT TOO SHORT. Detail: '{}'".format(para.text))
+                warnings.warn("TEXT TOO SHORT. Event: {} Detail: '{}'".format(event_number_within_loop,para.text))
 
     #       Get comment from this paragraph
             r = paragraph_comments(para,comments_dict)
@@ -81,13 +84,13 @@ def extract_AI_scores(docxFileName):
 
     #       Search for pattern of characters
 
-            patt = re.findall(r'[IEie][ETPRSOetprso][VILEHTvileht]',r[0])
+            patt = re.findall(r'[IEie][ETPRSOetprso][VILEHTvileht][TFUtfu]',r[0])
 
     #       If pattern is found...
             if patt:
                 # Warn if length is not 4
-                if len(patt[0]) != 3:
-                    warnings.warn("WEIRD LENGTH. Detail: '{}'".format(para.text))
+                if len(patt[0]) != 4:
+                    warnings.warn("WEIRD LENGTH. Event: {} Detail: '{}'".format(event_number_within_loop,para.text))
                 
                 # Category: I = internal ; E = external
                 if patt[0][0].upper() == 'I':
@@ -118,48 +121,50 @@ def extract_AI_scores(docxFileName):
                 elif patt[0][1:3].upper() == 'OT':
                     text2 = 'other'
                 else:
-                    warnings.warn("WEIRD SUB-CATEGORY PATTERN FOUND. Detail: '{}'".format(para.text))
+                    warnings.warn("WEIRD SUB-CATEGORY PATTERN FOUND. Event: {} Detail: '{}'".format(event_number_within_loop,para.text))
                     text2 = ''
                 
                 sub_category.append(text2)
                 
-                filename.append(docxFileName)
+                # Accuracy: T = true ; F = false ; U = unverifiable
+                if patt[0][3].upper() == 'T':
+                    text3 = 'true'
+                elif patt[0][3].upper() == 'F':
+                    text3 = 'false'
+                elif patt[0][3].upper() == 'U':
+                    text3 = 'unverifiable'
+                    
+                accuracy.append(text3)
+                
+                # Add event number
+                event_number.append(event_number_within_loop)
                 
     #       If pattern is not found make NaNs and create warning...
             else:    
                 category.append('NaN')       
                 sub_category.append('NaN')
-                filename.append(docxFileName)
+                accuracy.append('NaN')
+                event_number.append(event_number_within_loop)
 
-                warnings.warn("PATTERN NOT FOUND. Detail: '{}'".format(para.text))
+                warnings.warn("PATTERN NOT FOUND. Event: {} Detail: '{}'".format(event_number_within_loop,para.text))
         
         
     # Create data frame
-    df = pd.DataFrame(list(zip(filename,category,sub_category,feature_text)),
-                   columns =['filename','category','sub_category','text'])
+    df = pd.DataFrame(list(zip(event_number,category,sub_category,accuracy,feature_text)),
+                   columns =['event_number','category','sub_category','accuracy','text'])
 
     return df
-    
-     
  
 
-# Get input and output folder
-inFolder = sys.argv[1]
+# Get input and output document
+inDoc = sys.argv[1]
 print("")
-print("Processing Folder: {}".format(inFolder))
+print("Processing File: {}".format(inDoc))
 print("")
-outFolder = sys.argv[2]
+filename, file_extension = os.path.splitext(sys.argv[1])
+outFolder = "{}.csv".format(filename)
 
-#   
-df = pd.DataFrame(columns=['event_number','category', 
-                            'sub_category','accuracy',
-                            'text'])
-
-for file in sorted(glob.glob("{}{}".format(inFolder,'/*.docx'))):
-    # print(file)
-    df_event = extract_AI_scores(file)
-    df = pd.concat([df,df_event],sort=False)
-
+df = extract_AI_scores(inDoc)
 
 
 # Print the head
