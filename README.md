@@ -12,12 +12,13 @@ Required Packages: docx, lxml, zipfile, pandas, re
 
 #### Marking .docx files
 
-- One document should hold transcriptions for all events
-- Events should be clearly separated by Event XX before each transcription of the event
-- For each event, split details into new paragraphs (new line)
+- One document should hold transcriptions each participant and for all events
+- Events should be clearly separated by 'Event XX' before each transcription of the event
+- For each event, split details into new paragraphs (new line) according to AI scoring protocols
 - For each detail you wish to score, highlight the relevent text and add a new comment
+> - Speed this up by creating a keyboard shortcut for 'New Comment'
 
-- The comment should contain 4 letters, corresponding to the (adapted) Autobiographical Interview scoring protocol:
+- The comment should contain a 4 letter code, corresponding to the (adapted) Autobiographical Interview scoring protocol:
 
 >- Letter 1: I (Internal Detail) or E (External Detail)
 >- Letter 2-3: EV (Event), PE (Perceptual), TI (Time), PL (Place), TH (Thought/Emotion), SE (Semantic), RE (Repetition), OT (Other)
@@ -29,10 +30,10 @@ It should look like this:
 
 #### Running the code
 
-In the command line run:
+In the command line run (for example):
 
 ```python
-python3 process_AIscores_filbury.py path_to_docxfile
+python3 process_AIscores_filbury.py test_filbury/test_participant01.docx
 ```
 
 The script should print any warnings/errors encountered, and export a .csv file with the same name as the .docx file, organised like so:
