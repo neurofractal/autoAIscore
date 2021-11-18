@@ -151,8 +151,8 @@ print("")
 outFolder = sys.argv[2]
 
 #   
-df = pd.DataFrame(columns=['event_number','category', 
-                            'sub_category','accuracy',
+df = pd.DataFrame(columns=['filename','category', 
+                            'sub_category',
                             'text'])
 
 for file in sorted(glob.glob("{}{}".format(inFolder,'/*.docx'))):

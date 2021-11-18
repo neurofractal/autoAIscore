@@ -1,22 +1,22 @@
-,event_number,category,sub_category,accuracy,text,filename
-0,,internal,event,,"I remember being in the train station,",/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx
-1,,internal,perceptual,,with big circular old-style archways ,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx
-2,,internal,perceptual,,on the ceiling,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx
-3,,internal,event,,I walked ,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx
-4,,internal,event,,through the ticket barrier ,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx
-5,,internal,event,,and a women ,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx
-6,,internal,event,,"said hello to me, or welcomed me.",/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx
-7,,internal,event,,Oh and there was an announcement ,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx
-8,,internal,event,,about a train being late or something,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx
-9,,external,other,,This was right after you said the experiment started,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx
-10,,NaN,NaN,,This shouldn’t work,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx
-0,,internal,event,,Yes I remember meeting Dave. ,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx
-1,,internal,event,,"He was the tour guide, ",/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx
-2,,internal,thought_emotion,,And he was very enthusiastic.,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx
-3,,internal,place,,"It was right outside the train station, ",/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx
-4,,internal,event,,where we met him.,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx
-5,,internal,event,,"He explained Filbury was a great place, ",/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx
-6,,internal,event,,And there was so much to see and do.,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx
-7,,internal,perceptual,,"I think there might have been cars going past too, ",/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx
-8,,internal,perceptual,,And one honked it’s horn,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx
-0,,internal,event,,I remember there being a rabbit,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory3.docx
+,filename,category,sub_category,text
+0,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx,internal,event,"I remember being in the train station,"
+1,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx,internal,perceptual,with big circular old-style archways 
+2,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx,internal,perceptual,on the ceiling
+3,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx,internal,event,I walked 
+4,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx,internal,event,through the ticket barrier 
+5,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx,internal,event,and a women 
+6,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx,internal,event,"said hello to me, or welcomed me."
+7,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx,internal,event,Oh and there was an announcement 
+8,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx,internal,event,about a train being late or something
+9,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx,external,other,This was right after you said the experiment started
+10,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory1.docx,NaN,NaN,This shouldn’t work
+0,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx,internal,event,Yes I remember meeting Dave. 
+1,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx,internal,event,"He was the tour guide, "
+2,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx,internal,thought_emotion,And he was very enthusiastic.
+3,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx,internal,place,"It was right outside the train station, "
+4,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx,internal,event,where we met him.
+5,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx,internal,event,"He explained Filbury was a great place, "
+6,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx,internal,event,And there was so much to see and do.
+7,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx,internal,perceptual,"I think there might have been cars going past too, "
+8,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory2.docx,internal,perceptual,And one honked it’s horn
+0,/Users/rseymoue/Documents/GitHub/autoAIscore/test_AI/test_memory3.docx,internal,event,I remember there being a rabbit
