@@ -6,6 +6,7 @@ from lxml import etree
 import zipfile
 import re
 import glob
+import os
 import sys
 import pandas as pd
 import warnings
@@ -53,6 +54,10 @@ def extract_AI_scores(docxFileName):
     sub_category = []
     accuracy = []
     filename = []
+
+    # Split filename into head and tail
+    head_tail = os.path.split(docxFileName)
+
     
     print("Processing File {}".format(docxFileName))
 
@@ -123,13 +128,13 @@ def extract_AI_scores(docxFileName):
                 
                 sub_category.append(text2)
                 
-                filename.append(docxFileName)
+                filename.append(head_tail[1])
                 
     #       If pattern is not found make NaNs and create warning...
             else:    
                 category.append('NaN')       
                 sub_category.append('NaN')
-                filename.append(docxFileName)
+                filename.append(head_tail[1])
 
                 warnings.warn("\x1b[1;37;41mPATTERN NOT FOUND. Detail: '{}'\x1b[0m".format(para.text))
         
