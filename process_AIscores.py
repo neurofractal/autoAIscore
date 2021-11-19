@@ -72,8 +72,8 @@ def extract_AI_scores(docxFileName):
             feature_text.append(para.text)
 
     #       Warn the user if there is an unusually short string
-            if len(para.text) < 1:
-                warnings.warn("TEXT TOO SHORT. Detail: '{}'".format(para.text))
+            if len(para.text) < 2:
+                warnings.warn("\x1b[1;37;41mTEXT TOO SHORT. Detail: '{}'\x1b[0m".format(para.text))
 
     #       Get comment from this paragraph
             r = paragraph_comments(para,comments_dict)
@@ -87,7 +87,7 @@ def extract_AI_scores(docxFileName):
             if patt:
                 # Warn if length is not 4
                 if len(patt[0]) != 3:
-                    warnings.warn("WEIRD LENGTH. Detail: '{}'".format(para.text))
+                    warnings.warn("\x1b[1;37;41mWEIRD LENGTH. Detail: '{}'\x1b[0m".format(para.text))
                 
                 # Category: I = internal ; E = external
                 if patt[0][0].upper() == 'I':
@@ -118,7 +118,7 @@ def extract_AI_scores(docxFileName):
                 elif patt[0][1:3].upper() == 'OT':
                     text2 = 'other'
                 else:
-                    warnings.warn("WEIRD SUB-CATEGORY PATTERN FOUND. Detail: '{}'".format(para.text))
+                    warnings.warn("\x1b[1;37;41mWEIRD SUB-CATEGORY PATTERN FOUND. Detail: '{}'\x1b[0m".format(para.text))
                     text2 = ''
                 
                 sub_category.append(text2)
@@ -131,7 +131,7 @@ def extract_AI_scores(docxFileName):
                 sub_category.append('NaN')
                 filename.append(docxFileName)
 
-                warnings.warn("PATTERN NOT FOUND. Detail: '{}'".format(para.text))
+                warnings.warn("\x1b[1;37;41mPATTERN NOT FOUND. Detail: '{}'\x1b[0m".format(para.text))
         
         
     # Create data frame
