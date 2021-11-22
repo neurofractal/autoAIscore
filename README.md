@@ -4,9 +4,29 @@ Code to automatically extract data from Autobiographical Interview (AI) transcri
 
 ## Installing Python
 
-*Instructions to follow*
+1. Download and Install Anaconda Python from **[HERE](https://www.anaconda.com/products/individual)**
+2. Download this repository in Documents
+2. Open Anaconda3 --> Anaconda Prompt
+3. In the terminal type:
 
-Required Packages: docx, lxml, zipfile, pandas, re
+```bash
+pip install python-docx lxml 
+```
+4. In the terminal type:
+
+```bash
+# Change path to match your Documents path
+cd /users/XXX/Documents/autoAIscore
+```
+
+5. To test whether the script(s) are working, in the terminal type:
+
+```bash
+# Change paths to match your data
+python process_AIscores /users/XXX/Documents/autoAIscore/test_AI /users/XXX/Documents/autoAIscore/test_AI/out.csv
+```
+
+*!! Email Rob or IT Support if you have any issues !!*
 
 ## Filbury Study
 
