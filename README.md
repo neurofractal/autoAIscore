@@ -6,20 +6,20 @@ Code to automatically extract data from Autobiographical Interview (AI) transcri
 
 1. Download and Install Anaconda Python from **[HERE](https://www.anaconda.com/products/individual)**
 2. Download the autoAIscore repository in Documents (or wherever you want it)
-2. Open Anaconda3 --> Anaconda Prompt
-3. In the terminal type:
+3. Open Anaconda3 --> Anaconda Prompt
+4. In the terminal type:
 
 ```bash
 pip install python-docx lxml 
 ```
-4. In the terminal type:
+5. In the terminal type:
 
 ```bash
 # Change path to match your Documents path
 cd /users/XXX/Documents/autoAIscore
 ```
 
-5. To test whether the script(s) are working, in the terminal type:
+6. To test whether the script(s) are working, in the terminal type:
 
 ```bash
 # Change paths to match your data
