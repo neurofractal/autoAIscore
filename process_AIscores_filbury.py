@@ -9,6 +9,11 @@ import os
 import sys
 import pandas as pd
 import warnings
+from colorama import init
+from termcolor import colored
+
+# use Colorama to make Termcolor work on Windows too
+init()
 
 def custom_formatwarning(msg, *args, **kwargs):
     # ignore everything except the message
@@ -54,6 +59,7 @@ def extract_AI_scores(docxFileName):
     event_number = []
     
     event_number_within_loop = []
+    num_events = 0
     
     for para in document.paragraphs:
         # Check if this paragraph contains Event X, if so update event_number_within_loop
@@ -61,6 +67,7 @@ def extract_AI_scores(docxFileName):
         if find_event_number:
             event_number_within_loop = [int(s) for s in find_event_number[0].split() if s.isdigit()][0]
             print("Processing Event {}".format(event_number_within_loop))
+            num_events = num_events+1
         
         # Check if paragraph contains a comment
         comm = []
@@ -76,7 +83,7 @@ def extract_AI_scores(docxFileName):
 
     #       Warn the user if there is an unusually short string
             if len(para.text) < 2:
-                warnings.warn("\x1b[1;37;41mTEXT TOO SHORT. Event: {} Detail: '{}'\x1b[0m".format(event_number_within_loop,para.text))
+                warnings.warn(colored("    TEXT TOO SHORT. Event: {} Detail: '{}'\x1b[0m".format(event_number_within_loop,para.text),'red'))
 
     #       Get comment from this paragraph
             r = paragraph_comments(para,comments_dict)
@@ -90,7 +97,7 @@ def extract_AI_scores(docxFileName):
             if patt:
                 # Warn if length is not 4
                 if len(patt[0]) != 4:
-                    warnings.warn("\x1b[1;37;41mWEIRD LENGTH. Event: {} Detail: '{}'\x1b[0m".format(event_number_within_loop,para.text))
+                    warnings.warn(colored("    WEIRD LENGTH. Event: {} Detail: '{}'\x1b[0m".format(event_number_within_loop,para.text),'red'))
                 
                 # Category: I = internal ; E = external
                 if patt[0][0].upper() == 'I':
@@ -121,7 +128,7 @@ def extract_AI_scores(docxFileName):
                 elif patt[0][1:3].upper() == 'OT':
                     text2 = 'other'
                 else:
-                    warnings.warn("\x1b[1;37;41mWEIRD SUB-CATEGORY PATTERN FOUND. Event: {} Detail: '{}'\x1b[0m".format(event_number_within_loop,para.text))
+                    warnings.warn(colored("    WEIRD SUB-CATEGORY PATTERN FOUND. Event: {} Detail: '{}'\x1b[0m".format(event_number_within_loop,para.text),'red'))
                     text2 = ''
                 
                 sub_category.append(text2)
@@ -146,26 +153,29 @@ def extract_AI_scores(docxFileName):
                 accuracy.append('NaN')
                 event_number.append(event_number_within_loop)
 
-                warnings.warn("\x1b[1;37;41mPATTERN NOT FOUND. Event: {} Detail: '{}'\x1b[0m".format(event_number_within_loop,para.text))
+                warnings.warn(colored("    PATTERN NOT FOUND. Event: {} Detail: '{}'".format(event_number_within_loop,para.text),'red'))
         
         
     # Create data frame
     df = pd.DataFrame(list(zip(event_number,category,sub_category,accuracy,feature_text)),
                    columns =['event_number','category','sub_category','accuracy','text'])
 
-    return df
+    return df,num_events
  
 
 # Get input and output document
 inDoc = sys.argv[1]
 print("")
-print("Processing File: {}".format(inDoc))
+print(colored("Processing File: {}".format(inDoc),'blue'))
 print("")
 filename, file_extension = os.path.splitext(sys.argv[1])
 outFolder = "{}.csv".format(filename)
 
-df = extract_AI_scores(inDoc)
+df,num_events = extract_AI_scores(inDoc)
 
+print("")
+print(colored("  Total Number of Events: {}".format(num_events),'blue'))
+print("")
 
 # Print the head
 df.to_csv(outFolder)
