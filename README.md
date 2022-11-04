@@ -1,6 +1,14 @@
 # autoAIscore
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 
 Code to automatically extract data from Autobiographical Interview (AI) transcripts, scored by hand in Microsoft Word.
+
+
+## Citation
+
+[![DOI](https://zenodo.org/badge/429506915.svg)](https://zenodo.org/badge/latestdoi/429506915) 
+
+**Robert Seymour. (2022).** neurofractal/autoAIscore: v0.11 (v0.11). *Zenodo.* https://doi.org/10.5281/zenodo.7225874
 
 ## Installing Python
 
