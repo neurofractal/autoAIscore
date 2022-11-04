@@ -153,7 +153,7 @@ def extract_AI_scores(docxFileName):
                 accuracy.append('NaN')
                 event_number.append(event_number_within_loop)
 
-                warnings.warn(colored("    PATTERN NOT FOUND. Event: {} Detail: '{}'".format(event_number_within_loop,para.text),'red'))
+                warnings.warn(colored("    PATTERN NOT FOUND. Event: {} Detail: '{}' // Comment:'{}' ".format(event_number_within_loop,para.text,r[0]),'red'))
         
         
     # Create data frame
