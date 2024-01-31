@@ -63,7 +63,7 @@ def extract_AI_scores(docxFileName):
     
     for para in document.paragraphs:
         # Check if this paragraph contains Event X, if so update event_number_within_loop
-        find_event_number = (re.findall(r'\bEvent \d+',para.text))
+        find_event_number = (re.findall(r'\bevent \d+',(para.text).lower()))
         if find_event_number:
             event_number_within_loop = [int(s) for s in find_event_number[0].split() if s.isdigit()][0]
             print("Processing Event {}".format(event_number_within_loop))
@@ -166,7 +166,7 @@ def extract_AI_scores(docxFileName):
 # Get input and output document
 inDoc = sys.argv[1]
 print("")
-print(colored("Processing File: {}".format(inDoc),'blue'))
+print(colored("Processing File: {}".format(inDoc),'green'))
 print("")
 filename, file_extension = os.path.splitext(sys.argv[1])
 outFolder = "{}.csv".format(filename)
@@ -174,7 +174,7 @@ outFolder = "{}.csv".format(filename)
 df,num_events = extract_AI_scores(inDoc)
 
 print("")
-print(colored("  Total Number of Events: {}".format(num_events),'blue'))
+print(colored("  Total Number of Events: {}".format(num_events),'green'))
 print("")
 
 # Print the head
