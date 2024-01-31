@@ -1,0 +1,220 @@
+#!/usr/bin/env python3
+
+# Import packages
+from docx import Document
+from lxml import etree
+import zipfile
+import re
+import os
+import glob
+import sys
+import pandas as pd
+import warnings
+from colorama import init
+from termcolor import colored
+
+# use Colorama to make Termcolor work on Windows too
+init()
+
+def custom_formatwarning(msg, *args, **kwargs):
+    # ignore everything except the message
+    return str(msg) + '\n'
+
+warnings.formatwarning = custom_formatwarning
+
+ooXMLns = {'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
+#Function to extract all the comments of document(Same as accepted answer)
+#Returns a dictionary with comment id as key and comment string as value
+def get_document_comments(docxFileName):
+    comments_dict={}
+    docxZip = zipfile.ZipFile(docxFileName)
+    commentsXML = docxZip.read('word/comments.xml')
+    et = etree.XML(commentsXML)
+    comments = et.xpath('//w:comment',namespaces=ooXMLns)
+    for c in comments:
+        comment=c.xpath('string(.)',namespaces=ooXMLns)
+        comment_id=c.xpath('@w:id',namespaces=ooXMLns)[0]
+        comments_dict[comment_id]=comment
+    return comments_dict
+
+def paragraph_comments(paragraph,comments_dict):
+    comments=[]
+    for run in paragraph.runs:
+        comment_reference=run._r.xpath("./w:commentReference")
+        if comment_reference:
+            comment_id=comment_reference[0].xpath('@w:id',namespaces=ooXMLns)[0]
+            comment=comments_dict[comment_id]
+            comments.append(comment)
+    return comments
+
+
+def extract_AI_scores(docxFileName):
+
+    document = Document(docxFileName)
+    comments_dict=get_document_comments(docxFileName)
+    
+    feature_text = []
+    category = []
+    sub_category = []
+    accuracy = []
+    event_number = []
+    
+    event_number_within_loop = []
+    num_events = 0
+    
+    for para in document.paragraphs:
+        # Check if this paragraph contains Event X, if so update event_number_within_loop
+        find_event_number = (re.findall(r'\bevent \d+',(para.text).lower()))
+        if find_event_number:
+            event_number_within_loop = [int(s) for s in find_event_number[0].split() if s.isdigit()][0]
+            print("Processing Event {}".format(event_number_within_loop))
+            num_events = num_events+1
+        
+        # Check if paragraph contains a comment
+        comm = []
+        for run in para.runs:
+            comment_reference=run._r.xpath("./w:commentReference")
+            if comment_reference:
+                comm = comment_reference
+        
+        # If it does...
+        if comm:
+    #       Add paragraph text   
+            feature_text.append(para.text)
+
+    #       Warn the user if there is an unusually short string
+            if len(para.text) < 2:
+                warnings.warn(colored("    TEXT TOO SHORT. Event: {} Detail: '{}'\x1b[0m".format(event_number_within_loop,para.text),'red'))
+
+    #       Get comment from this paragraph
+            r = paragraph_comments(para,comments_dict)
+    #       Add the text to feature_text
+
+    #       Search for pattern of characters
+
+            patt = re.findall(r'[IEie][ETPRSOetprso][VILEHTvileht][TFUtfu]',r[0])
+
+    #       If pattern is found...
+            if patt:
+                # Warn if length is not 4
+                if len(patt[0]) != 4:
+                    warnings.warn(colored("    WEIRD LENGTH. Event: {} Detail: '{}'\x1b[0m".format(event_number_within_loop,para.text),'red'))
+                
+                # Category: I = internal ; E = external
+                if patt[0][0].upper() == 'I':
+                    text1 = 'internal'
+                elif patt[0][0].upper() == 'E':
+                    text1 = 'external'
+                
+                category.append(text1)      
+                
+                # Sub-Category: EV = event ; PE = perceptual ; TI = time ; PL = Place
+                #               TH = thought_emotion ; SE = semantic ; RE = repetition ;
+                #               OT = other
+                                
+                if patt[0][1:3].upper() == 'EV':
+                    text2 = 'event'
+                elif patt[0][1:3].upper() == 'PE':
+                    text2 = 'perceptual'
+                elif patt[0][1:3].upper() == 'TI':
+                    text2 = 'time'
+                elif patt[0][1:3].upper() == 'PL':
+                    text2 = 'place'
+                elif patt[0][1:3].upper() == 'TH':
+                    text2 = 'thought_emotion'
+                elif patt[0][1:3].upper() == 'SE':
+                    text2 = 'semantic'
+                elif patt[0][1:3].upper() == 'RE':
+                    text2 = 'repetition'
+                elif patt[0][1:3].upper() == 'OT':
+                    text2 = 'other'
+                else:
+                    warnings.warn(colored("    WEIRD SUB-CATEGORY PATTERN FOUND. Event: {} Detail: '{}'\x1b[0m".format(event_number_within_loop,para.text),'red'))
+                    text2 = ''
+                
+                sub_category.append(text2)
+                
+                # Accuracy: T = true ; F = false ; U = unverifiable
+                if patt[0][3].upper() == 'T':
+                    text3 = 'true'
+                elif patt[0][3].upper() == 'F':
+                    text3 = 'false'
+                elif patt[0][3].upper() == 'U':
+                    text3 = 'unverifiable'
+                    
+                accuracy.append(text3)
+                
+                # Add event number
+                event_number.append(event_number_within_loop)
+                
+    #       If pattern is not found make NaNs and create warning...
+            else:    
+                category.append('NaN')       
+                sub_category.append('NaN')
+                accuracy.append('NaN')
+                event_number.append(event_number_within_loop)
+
+                warnings.warn(colored("    PATTERN NOT FOUND. Event: {} Detail: '{}' // Comment:'{}' ".format(event_number_within_loop,para.text,r[0]),'red'))
+        
+        
+    # Create data frame
+    df = pd.DataFrame(list(zip(event_number,category,sub_category,accuracy,feature_text)),
+                   columns =['event_number','category','sub_category','accuracy','text'])
+
+    return df,num_events
+ 
+
+# Get input and output document
+input_to_docs = sys.argv[1]
+
+# Get all docx files in a directory
+docx_files = []
+
+for root, dirs, files in os.walk(input_to_docs):
+    for file in files:
+        if file.endswith(".docx"):
+            # print(os.path.join(root, file))
+            docx_files.append(os.path.join(root, file))
+
+# Each each of these
+for inDoc in docx_files:
+
+    print("")
+    print(colored("Processing File: {}".format(inDoc),'green'))
+    print("")
+    # Split the path into the folder and filename
+    folder_path, file_name_with_extension = os.path.split(inDoc)
+
+    # Split the filename into the filename and extension
+    file_name, file_extension = os.path.splitext(file_name_with_extension)
+
+    outFolder = os.path.join(folder_path, "{}.csv".format(file_name))
+
+    # Run the function in a loop
+    try:
+        df,num_events = extract_AI_scores(inDoc)
+
+        print("")
+        print(colored("  Total Number of Events: {}".format(num_events),'green'))
+        print("")
+
+        # Print the head
+        df.to_csv(outFolder)
+        print("")
+        print("Output: {}".format(outFolder))
+        print("")
+    # If it failes pause for 1.0s and print an error
+    except:
+        print("")
+        print("")
+        print("")
+        print("")
+        import time
+        time.sleep(1.0)
+        print("ERROR: {}".format(inDoc))
+        print("")
+        print("")
+        print("")
+        print("")
+
+     
